@@ -1,0 +1,90 @@
+/* Overall layout */
+.greeting-screen__container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  font-family: sans-serif;
+  padding-inline: 40px;
+}
+
+/* Title */
+.greeting-screen__title {
+  font-size: 48px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+  margin-top: 40px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Description */
+.greeting-screen__description {
+  font-size: 18px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 40px;
+  text-align: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Features */
+.greeting-screen__features {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-bottom: 40px;
+  gap: 15px;
+}
+
+.greeting-screen__feature {
+  flex-basis: 30%; /* Adjust to 33.33% for 3 columns */
+  text-align: center;
+  margin-bottom: 20px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.greeting-screen__feature i {
+  font-size: 48px;
+  color: #333; /* Use brand color for icons */
+  margin-bottom: 10px;
+}
+
+/* Maintain original button styling */
+.greeting-screen__actions {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  align-items: center; /* Buttons are centered horizontally */
+}
+
+.greeting-screen__button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 15px 20px;
+  width: 60px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.16);
+  text-align: center;
+  text-decoration: none;
+  margin-bottom: 40px;
+}
+
+.greeting-screen__button:hover {
+  background-color: #0062cc;
+}

@@ -1,0 +1,110 @@
+/* Basic styles */
+.signup-screen__container {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  background-color: #f5f5f5;
+}
+
+.signup-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 40px;
+}
+
+.signup-screen h1 {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.signup-screen form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.signup-screen label {
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.signup-screen input[type="text"],
+.signup-screen input[type="email"],
+.signup-screen input[type="password"] {
+  padding: 12px 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  outline-color: #0062cc;
+}
+
+.signup-screen button {
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 15px;
+  background-color: #007bff;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.16);
+  text-align: center;
+  text-decoration: none;
+}
+
+.signup-screen button:hover {
+  background-color: #0062cc;
+}
+
+.signup-screen .error {
+  color: red;
+  margin-bottom: 10px;
+}
+
+/* Progress bar styles */
+.progress-bar-container {
+  width: 100%;
+  height: 10px;
+  background-color: #ddd;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #007bff;
+  border-radius: 5px;
+  transition: width 0.3s ease-in-out;
+}
+
+.signup-screen input[type="text"],
+.signup-screen input[type="email"],
+.signup-screen input[type="password"] {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.signup-screen button {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.signup-screen h1 {
+  color: #333;
+}
+
+.signup-screen__login {
+  margin-top: 25px;
+}
+
+/* You can add more styles based on your design preferences */
