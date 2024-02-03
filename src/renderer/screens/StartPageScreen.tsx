@@ -1,10 +1,28 @@
 import React from 'react';
 import './StartPageScreen.css';
 import { Link } from 'react-router-dom';
+import Modal from 'react-modal';
+import { useListener } from '../functions';
+import ConfirmExit from '../components/ConfirmExit';
+
+Modal.setAppElement('#root');
 
 function StartPageScreen() {
+  const [modalIsOpen, setModalIsOpen] = React.useState(false);
+
+  useListener('mouseup', (e) => {
+    if (e.button === 3) {
+      e.preventDefault();
+
+      setModalIsOpen(true);
+    }
+  });
+
   return (
     <div className="start-page-screen__container">
+      <Modal isOpen={modalIsOpen} className="confirm-exit__modal">
+        <ConfirmExit onClose={setModalIsOpen} />
+      </Modal>
       <h1 className="start-page-screen__title">
         Welcome to Code Zone, Teacher!
       </h1>

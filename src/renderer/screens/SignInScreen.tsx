@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import './SignInScreen.css';
+import { Link } from 'react-router-dom';
 import { loginUser } from '../functions';
 import PasswordInput from '../components/PasswordInput';
 import BackButton from '../components/BackButton';
@@ -73,13 +74,16 @@ function SignInScreen() {
             orientation="vertical"
             required
           />
+          <Link className="signin-screen__forgot_password" to="/forgotPassword">
+            Forgot your password?
+          </Link>
           <div className="progress-bar-container">
             <div className="progress-bar" style={{ width: `${progress}%` }} />
           </div>
           <button type="submit">Sign In</button>
         </form>
-        <p className="signin-screen__login">
-          Don&apos;t have an account? <a href="/signup">Register</a>
+        <p className="signin-screen__signup">
+          Don&apos;t have an account? <Link to="/signup">Register</Link>
         </p>
       </div>
     </div>

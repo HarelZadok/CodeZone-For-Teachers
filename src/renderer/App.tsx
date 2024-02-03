@@ -1,6 +1,6 @@
 /* eslint jsx-a11y/click-events-have-key-events: off, jsx-a11y/no-static-element-interactions: off, react/jsx-props-no-spreading: off */
 
-import { useLocation, Routes, Route } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import './App.css';
 import { FaRegWindowMinimize } from 'react-icons/fa6';
@@ -8,32 +8,29 @@ import { TbWindowMaximize, TbWindowMinimize } from 'react-icons/tb';
 import { IoClose } from 'react-icons/io5';
 import { ScrollContainer, useGlobalState } from 'react-nice-scroll';
 import 'react-nice-scroll/dist/styles.css';
-import StartPageScreen from './screens/StartPageScreen';
-import SignUpScreen from './screens/SignUpScreen';
-import SignInScreen from './screens/SignInScreen';
-import DashboardScreen from './screens/DashboardScreen';
+import Navigation from './Navigation';
 
 function App() {
   const [maximized, setMaximized] = React.useState(false);
 
-  window.electron.ipcRenderer.on('maximized', () => {
+  window.electron.ipcRenderer.onWindow('maximized', () => {
     setMaximized(true);
   });
 
-  window.electron.ipcRenderer.on('unmaximized', () => {
+  window.electron.ipcRenderer.onWindow('unmaximized', () => {
     setMaximized(false);
   });
 
   const minimize = () => {
-    window.electron.ipcRenderer.sendMessage('minimize');
+    window.electron.ipcRenderer.sendWindowMessage('minimize');
   };
 
   const maximize = () => {
-    window.electron.ipcRenderer.sendMessage('toggle_maximized');
+    window.electron.ipcRenderer.sendWindowMessage('toggle_maximized');
   };
 
   const close = () => {
-    window.electron.ipcRenderer.sendMessage('close');
+    window.electron.ipcRenderer.sendWindowMessage('close');
   };
 
   const [smoothScrollBar] = useGlobalState('smoothScrollBar');
@@ -72,12 +69,7 @@ function App() {
       <div className="app_scroll-container">
         <ScrollContainer>
           <div className="app__body">
-            <Routes>
-              <Route path="/" element={<StartPageScreen />} />
-              <Route path="signup" element={<SignUpScreen />} />
-              <Route path="login" element={<SignInScreen />} />
-              <Route path="dashboard" element={<DashboardScreen />} />
-            </Routes>
+            <Navigation />
           </div>
         </ScrollContainer>
       </div>

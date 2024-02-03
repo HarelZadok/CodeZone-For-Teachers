@@ -10,6 +10,7 @@ import {
   updateProfile,
   getAuth,
 } from 'firebase/auth';
+import { useEffect } from 'react';
 
 export { updatePassword, updateEmail, updatePhoneNumber, updateProfile };
 
@@ -112,3 +113,17 @@ export const emailVerification = async () => {
 };
 
 export const logOut = signOut(getAuth());
+
+// eslint-disable-next-line no-undef
+export function useListener<K extends keyof WindowEventMap>(
+  event: K,
+  // eslint-disable-next-line no-undef
+  callback: (e: WindowEventMap[K]) => void,
+) {
+  useEffect(() => {
+    window.addEventListener(event, callback);
+    return () => {
+      window.removeEventListener(event, callback);
+    };
+  }, [callback, event]);
+}

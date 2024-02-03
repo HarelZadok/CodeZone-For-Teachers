@@ -108,7 +108,7 @@ const updateBounds = (
   }
 };
 
-const getBounds = (defaultValues: any) => {
+const getBounds = (defaultValues?: any) => {
   return store.get('windowBounds', defaultValues) as any;
 };
 

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import './SignUpScreen.css';
+import { Link } from 'react-router-dom';
 import { registerUser } from '../functions';
 import PasswordInput from '../components/PasswordInput';
 import BackButton from '../components/BackButton';
@@ -108,7 +109,7 @@ function SignUpScreen() {
           <button type="submit">Sign Up</button>
         </form>
         <p className="signup-screen__login">
-          Already have an account? <a href="/login">Log in</a>
+          Already have an account? <Link to="/login">Log in</Link>
         </p>
       </div>
     </div>

@@ -5,16 +5,32 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #f5f5f5;
   font-family: sans-serif;
   padding-inline: 40px;
+}
+
+.confirm-exit__modal {
+  display: flex;
+  width: 350px;
+  height: 150px;
+  position: fixed;
+  left: calc(50% - 150px);
+  top: calc(50% - 75px);
+  background-color: white;
+  border-radius: 10px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #a5a5a5;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Title */
 .start-page-screen__title {
   font-size: 48px;
   font-weight: bold;
-  color: #333;
+  color: white;
   margin-bottom: 20px;
   text-align: center;
   margin-top: 40px;
@@ -27,7 +43,7 @@
 /* Description */
 .start-page-screen__description {
   font-size: 18px;
-  color: #666;
+  color: white;
   line-height: 1.5;
   margin-bottom: 40px;
   text-align: center;
@@ -54,12 +70,7 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
-
-.start-page-screen__feature i {
-  font-size: 48px;
-  color: #333; /* Use brand color for icons */
-  margin-bottom: 10px;
+  color: white;
 }
 
 /* Maintain original button styling */
@@ -71,10 +82,11 @@
 }
 
 .start-page-screen__button {
-  background-color: #007bff;
-  color: #fff;
+  background-color: #fff;
+  color: black;
+  font-size: 18px;
   padding: 15px 20px;
-  width: 60px;
+  width: 70px;
   border: none;
   border-radius: 50px;
   cursor: pointer;
@@ -86,5 +98,5 @@
 }
 
 .start-page-screen__button:hover {
-  background-color: #0062cc;
+  background-color: #eee;
 }
