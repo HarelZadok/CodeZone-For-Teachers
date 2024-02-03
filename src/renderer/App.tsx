@@ -8,9 +8,10 @@ import { TbWindowMaximize, TbWindowMinimize } from 'react-icons/tb';
 import { IoClose } from 'react-icons/io5';
 import { ScrollContainer, useGlobalState } from 'react-nice-scroll';
 import 'react-nice-scroll/dist/styles.css';
-import GreetingScreen from './screens/GreetingScreen';
+import StartPageScreen from './screens/StartPageScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import SignInScreen from './screens/SignInScreen';
+import DashboardScreen from './screens/DashboardScreen';
 
 function App() {
   const [maximized, setMaximized] = React.useState(false);
@@ -72,9 +73,10 @@ function App() {
         <ScrollContainer>
           <div className="app__body">
             <Routes>
-              <Route path="/" element={<GreetingScreen />} />
+              <Route path="/" element={<StartPageScreen />} />
               <Route path="signup" element={<SignUpScreen />} />
               <Route path="login" element={<SignInScreen />} />
+              <Route path="dashboard" element={<DashboardScreen />} />
             </Routes>
           </div>
         </ScrollContainer>

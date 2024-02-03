@@ -1,11 +1,22 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, screen } from 'electron';
+import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { autoUpdater } from 'electron-updater';
+import log from 'electron-log';
+import Store from 'electron-store';
 
 let mainWindow: BrowserWindow | null = null;
 
 let isMaximized = false;
+
+class AppUpdater {
+  constructor() {
+    log.transports.file.level = 'info';
+    autoUpdater.logger = log;
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+}
 
 ipcMain.on('minimize', () => {
   mainWindow?.minimize();
@@ -35,8 +46,6 @@ if (isDebug) {
   require('electron-debug')();
 }
 
-let currentDisplay: any;
-
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
@@ -50,51 +59,123 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
+const store = new Store();
+
+const updateBounds = (
+  property: 'maximize' | 'unmaximize' | 'resize' | 'move',
+) => {
+  if (!mainWindow) {
+    throw new Error('"mainWindow" is not defined');
+  }
+
+  switch (property) {
+    case 'maximize':
+      isMaximized = true;
+      mainWindow?.webContents.send('maximized');
+      store.set('windowBounds', {
+        // @ts-ignore
+        ...store.get('windowBounds'),
+        maximized: mainWindow.isMaximized(),
+      });
+      break;
+    case 'unmaximize':
+      isMaximized = false;
+      mainWindow?.webContents.send('unmaximized');
+      store.set('windowBounds', {
+        // @ts-ignore
+        ...store.get('windowBounds'),
+        maximized: mainWindow.isMaximized(),
+      });
+      break;
+    case 'resize':
+      store.set('windowBounds', {
+        // @ts-ignore
+        ...store.get('windowBounds'),
+        width: mainWindow.getBounds().width,
+        height: mainWindow.getBounds().height,
+      });
+      break;
+    case 'move':
+      store.set('windowBounds', {
+        // @ts-ignore
+        ...store.get('windowBounds'),
+        x: mainWindow.getBounds().x,
+        y: mainWindow.getBounds().y,
+      });
+      break;
+    default:
+      break;
+  }
+};
+
+const getBounds = (defaultValues: any) => {
+  return store.get('windowBounds', defaultValues) as any;
+};
+
 const createWindow = async () => {
   if (isDebug) {
     await installExtensions();
   }
 
+  const { x, y, width, height, maximized } = getBounds({
+    x: 0,
+    y: 0,
+    width: 1300,
+    height: 800,
+    maximized: false,
+  });
+
   mainWindow = new BrowserWindow({
-    width: 1300, // Initial width
-    height: 800, // Initial height
+    width, // Initial width
+    height, // Initial height
     minWidth: 850, // Minimum allowed width
     minHeight: 550, // Minimum allowed height
-    x: currentDisplay.bounds.x + currentDisplay.bounds.width / 2 - 650,
-    y: currentDisplay.bounds.y + currentDisplay.bounds.height / 2 - 400,
+    x: 0,
+    y: 0,
     title: 'Code Zone',
     frame: false,
+    show: false,
     autoHideMenuBar: true,
     webPreferences: {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
-      webSecurity: true,
       devTools: false,
     },
   });
 
-  mainWindow.loadURL('http://localhost:1212');
+  await mainWindow.loadURL('http://localhost:1212');
 
-  mainWindow.on('ready-to-show', () => {
-    if (!mainWindow) {
-      throw new Error('"mainWindow" is not defined');
-    }
-    mainWindow.show();
-  });
+  mainWindow!.setPosition(x, y);
+  if (maximized) {
+    mainWindow!.maximize();
+    updateBounds('maximize');
+  }
+
+  mainWindow.show();
 
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
 
   mainWindow.on('maximize', () => {
-    isMaximized = true;
-    mainWindow?.webContents.send('maximized');
+    updateBounds('maximize');
+  });
+
+  mainWindow.on('resize', () => {
+    if (!mainWindow?.isMaximized()) {
+      updateBounds('resize');
+    }
+  });
+
+  mainWindow.on('move', () => {
+    if (!mainWindow?.isMaximized()) {
+      updateBounds('move');
+    }
   });
 
   mainWindow.on('unmaximize', () => {
-    isMaximized = false;
-    mainWindow?.webContents.send('unmaximized');
+    updateBounds('unmaximize');
   });
 
   // Open urls in the user's browser
@@ -102,6 +183,9 @@ const createWindow = async () => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
   });
+
+  // eslint-disable-next-line
+  new AppUpdater();
 };
 
 app.on('window-all-closed', () => {
@@ -116,10 +200,9 @@ app
   .whenReady()
   .then(() => {
     // eslint-disable-next-line prefer-destructuring
-    currentDisplay = screen.getAllDisplays()[1];
     createWindow();
     app.on('activate', () => {
-      // On macOS it's common to re-create a window in the app when the
+      // On macOS, it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
       if (mainWindow === null) createWindow();
     });

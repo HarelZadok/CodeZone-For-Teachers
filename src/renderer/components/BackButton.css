@@ -1,0 +1,28 @@
+.back-button {
+  position: absolute;
+  top: 50px;
+  left: 25px;
+  width: 30px;
+  height: 30px;
+}
+
+.back-button__link {
+  position: absolute;
+}
+
+.back-button__link--hover {
+  position: absolute;
+  animation: moveLeftRight 0.5s infinite ease-in-out;
+}
+
+@keyframes moveLeftRight {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

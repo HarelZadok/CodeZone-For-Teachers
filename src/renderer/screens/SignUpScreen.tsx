@@ -2,6 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import './SignUpScreen.css';
+import { registerUser } from '../functions';
+import PasswordInput from '../components/PasswordInput';
+import BackButton from '../components/BackButton';
 
 function SignUpScreen() {
   const [name, setName] = useState('');
@@ -11,8 +14,8 @@ function SignUpScreen() {
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
 
-  const handleSubmit = (e: { preventDefault: () => void }) => {
-    e.preventDefault();
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
 
     // Perform form validation here
     if (!name || !email || !password || !confirmPassword) {
@@ -27,6 +30,13 @@ function SignUpScreen() {
 
     // ... handle successful signup or potential errors
     setError(null);
+
+    try {
+      await registerUser({ email, password, name });
+      window.location.href = '/dashboard';
+    } catch (e: any) {
+      setError(e.message);
+    }
   };
 
   useEffect(() => {
@@ -52,7 +62,8 @@ function SignUpScreen() {
   return (
     <div className="signup-screen__container">
       <div className="signup-screen">
-        <h1>Create Your Account</h1>
+        <BackButton to="/" />
+        <h1>Create a new account</h1>
         {error && <p className="error">{error}</p>}
         <form onSubmit={handleSubmit}>
           <label htmlFor="name">Name:</label>
@@ -73,22 +84,22 @@ function SignUpScreen() {
             onChange={handleInputChange}
             required
           />
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
+          <PasswordInput
+            value={password}
             id="password"
             name="password"
-            value={password}
+            label="Password:"
             onChange={handleInputChange}
+            orientation="vertical"
             required
           />
-          <label htmlFor="confirmPassword">Confirm Password:</label>
-          <input
-            type="password"
+          <PasswordInput
+            value={confirmPassword}
             id="confirmPassword"
             name="confirmPassword"
-            value={confirmPassword}
+            label="Confirm Password:"
             onChange={handleInputChange}
+            orientation="vertical"
             required
           />
           <div className="progress-bar-container">
