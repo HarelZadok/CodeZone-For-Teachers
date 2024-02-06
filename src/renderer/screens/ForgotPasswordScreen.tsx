@@ -3,133 +3,75 @@
 import React, { useState } from 'react';
 import './ForgotPasswordScreen.css';
 import BackButton from '../components/BackButton';
+import CodeInput from '../components/CodeInput';
+import { useToast } from '../components/Toast';
+import { emailResetPassword } from '../functions';
 
 function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [code, setCode] = useState(['', '', '', '', '', '']);
+  const [codeSent, setCodeSent] = useState(false);
+  const [code, setCode] = useState('');
+  const showToast = useToast();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!codeSent) {
+      try {
+        await emailResetPassword(email);
+        showToast(
+          'A code sent to your email. Check your inbox or spam folder for the code.',
+          5,
+          's',
+        );
+      } catch (error: any) {
+        showToast(error.message, 5, 's');
+      }
+      setCodeSent(true);
+    }
+  };
+
+  const handleResendCode = async () => {
+    try {
+      await emailResetPassword(email);
+      showToast(
+        'A code sent to your email. Check your inbox or spam folder for the code.',
+        5,
+        's',
+      );
+    } catch (error: any) {
+      showToast(error.message, 5, 's');
+    }
+  };
 
   return (
     <div className="forgot-password-screen__container">
       <div className="forgot-password-screen">
         <BackButton to="/login" />
         <h1>Forgot your password</h1>
-        {error && <p className="error">{error}</p>}
-        <form>
+        <form onSubmit={handleSubmit}>
           <label htmlFor="email">Email:</label>
           <input
             type="email"
             id="email"
             name="email"
             value={email}
+            disabled={codeSent}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <div className="forgot-password-screen__code_container">
-            <input
-              type="number"
-              id="code-input-0"
-              maxLength={1}
-              value={code[0]}
-              onChange={(e) => {
-                setCode((prev) => {
-                  const newValue = [...prev];
-                  newValue[0] = e.target.value.charAt(0);
-                  return newValue;
-                });
-
-                if (e.target.value.length === 1) {
-                  document.getElementById('code-input-1')?.focus();
-                }
-              }}
-            />
-            <input
-              type="number"
-              id="code-input-1"
-              maxLength={1}
-              value={code[1]}
-              onChange={(e) => {
-                setCode((prev) => {
-                  const newValue = [...prev];
-                  newValue[1] = e.target.value.charAt(0);
-                  return newValue;
-                });
-
-                if (e.target.value.length === 1) {
-                  document.getElementById('code-input-2')?.focus();
-                }
-              }}
-            />
-            <input
-              type="number"
-              id="code-input-2"
-              maxLength={1}
-              value={code[2]}
-              onChange={(e) => {
-                setCode((prev) => {
-                  const newValue = [...prev];
-                  newValue[2] = e.target.value.charAt(0);
-                  return newValue;
-                });
-
-                if (e.target.value.length === 1) {
-                  document.getElementById('code-input-3')?.focus();
-                }
-              }}
-            />
-            <input
-              type="number"
-              id="code-input-3"
-              maxLength={1}
-              value={code[3]}
-              onChange={(e) => {
-                setCode((prev) => {
-                  const newValue = [...prev];
-                  newValue[3] = e.target.value.charAt(0);
-                  return newValue;
-                });
-
-                if (e.target.value.length === 1) {
-                  document.getElementById('code-input-4')?.focus();
-                }
-              }}
-            />
-            <input
-              type="number"
-              id="code-input-4"
-              maxLength={1}
-              value={code[4]}
-              onChange={(e) => {
-                setCode((prev) => {
-                  const newValue = [...prev];
-                  newValue[4] = e.target.value.charAt(0);
-                  return newValue;
-                });
-
-                if (e.target.value.length === 1) {
-                  document.getElementById('code-input-5')?.focus();
-                }
-              }}
-            />
-            <input
-              type="number"
-              id="code-input-5"
-              maxLength={1}
-              value={code[5]}
-              onChange={(e) => {
-                setCode((prev) => {
-                  const newValue = [...prev];
-                  newValue[5] = e.target.value.charAt(0);
-                  return newValue;
-                });
-
-                if (e.target.value.length === 1) {
-                  document.getElementById('code-input-5')?.blur();
-                }
-              }}
-            />
-          </div>
-          <button type="submit">Send code</button>
+          {codeSent && (
+            <button
+              className="forgot-password-screen__reset_code"
+              type="button"
+              onClick={handleResendCode}
+            >
+              Resend code
+            </button>
+          )}
+          <CodeInput onChange={setCode} visible={codeSent} />
+          <button className="forgot-password-screen__submit" type="submit">
+            {codeSent ? 'Continue' : 'Send code'}
+          </button>
         </form>
       </div>
     </div>

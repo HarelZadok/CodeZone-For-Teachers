@@ -9,6 +9,7 @@ import { IoClose } from 'react-icons/io5';
 import { ScrollContainer, useGlobalState } from 'react-nice-scroll';
 import 'react-nice-scroll/dist/styles.css';
 import Navigation from './Navigation';
+import { ToastProvider } from './components/Toast';
 
 function App() {
   const [maximized, setMaximized] = React.useState(false);
@@ -68,9 +69,11 @@ function App() {
       </div>
       <div className="app_scroll-container">
         <ScrollContainer>
-          <div className="app__body">
-            <Navigation />
-          </div>
+          <ToastProvider>
+            <div className="app__body">
+              <Navigation />
+            </div>
+          </ToastProvider>
         </ScrollContainer>
       </div>
     </div>

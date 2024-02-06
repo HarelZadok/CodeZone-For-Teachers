@@ -71,6 +71,7 @@
   -ms-user-select: none;
   user-select: none;
   color: white;
+  width: 180px;
 }
 
 /* Maintain original button styling */

@@ -1,0 +1,38 @@
+.toast__container {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: fit-content;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toast__notification {
+  margin: 1rem;
+  width: fit-content;
+  z-index: 1000;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 1rem;
+  position: relative;
+  top: 100px;
+  animation: slideIn ease-in-out;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(0);
+  }
+  15% {
+    transform: translateY(-100px)
+  }
+  85% {
+    transform: translateY(-100px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}

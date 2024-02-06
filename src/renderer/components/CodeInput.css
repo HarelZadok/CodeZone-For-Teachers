@@ -1,0 +1,26 @@
+.code-input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.code-input__input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  outline-color: #0062cc;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  -moz-appearance: textfield;
+  font-size: 40px;
+}
+
+.code-input__input::-webkit-inner-spin-button,
+.code-input__input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
