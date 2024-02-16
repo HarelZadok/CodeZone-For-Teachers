@@ -2,45 +2,39 @@
 
 import React, { useState } from 'react';
 import './ForgotPasswordScreen.css';
+import { useNavigate } from 'react-router';
 import BackButton from '../components/BackButton';
-import CodeInput from '../components/CodeInput';
 import { useToast } from '../components/Toast';
 import { emailResetPassword } from '../functions';
 
 function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
-  const [codeSent, setCodeSent] = useState(false);
-  const [code, setCode] = useState('');
+  const [linkSent, setLinkSent] = useState(false);
   const showToast = useToast();
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!codeSent) {
-      try {
-        await emailResetPassword(email);
-        showToast(
-          'A code sent to your email. Check your inbox or spam folder for the code.',
-          5,
-          's',
-        );
-      } catch (error: any) {
-        showToast(error.message, 5, 's');
-      }
-      setCodeSent(true);
-    }
-  };
-
-  const handleResendCode = async () => {
+  const sendLink = async () => {
     try {
       await emailResetPassword(email);
       showToast(
-        'A code sent to your email. Check your inbox or spam folder for the code.',
+        'A link was sent to your email. Check your inbox or spam folder for the code.',
         5,
         's',
       );
+      setLinkSent(true);
     } catch (error: any) {
       showToast(error.message, 5, 's');
     }
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (linkSent) navigate('/login');
+    else sendLink();
+  };
+
+  const handleResend = () => {
+    sendLink();
   };
 
   return (
@@ -55,22 +49,21 @@ function ForgotPasswordScreen() {
             id="email"
             name="email"
             value={email}
-            disabled={codeSent}
+            disabled={linkSent}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          {codeSent && (
+          {linkSent && (
             <button
               className="forgot-password-screen__reset_code"
               type="button"
-              onClick={handleResendCode}
+              onClick={handleResend}
             >
-              Resend code
+              Resend link
             </button>
           )}
-          <CodeInput onChange={setCode} visible={codeSent} />
           <button className="forgot-password-screen__submit" type="submit">
-            {codeSent ? 'Continue' : 'Send code'}
+            {linkSent ? 'Continue' : 'Send link '}
           </button>
         </form>
       </div>

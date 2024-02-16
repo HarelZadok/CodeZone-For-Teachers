@@ -1,0 +1,15 @@
+.loading-screen__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.loading-screen__label {
+  margin-top: 50px;
+  font-size: 24px;
+  font-weight: normal;
+  color: white;
+}

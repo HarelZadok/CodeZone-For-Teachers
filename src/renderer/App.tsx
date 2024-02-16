@@ -1,38 +1,32 @@
 /* eslint jsx-a11y/click-events-have-key-events: off, jsx-a11y/no-static-element-interactions: off, react/jsx-props-no-spreading: off */
 
 import { useLocation } from 'react-router-dom';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, createContext } from 'react';
 import './App.css';
-import { FaRegWindowMinimize } from 'react-icons/fa6';
-import { TbWindowMaximize, TbWindowMinimize } from 'react-icons/tb';
-import { IoClose } from 'react-icons/io5';
 import { ScrollContainer, useGlobalState } from 'react-nice-scroll';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import 'react-nice-scroll/dist/styles.css';
-import Navigation from './Navigation';
+import { AuthNavigation, AppNavigation } from './Navigation';
 import { ToastProvider } from './components/Toast';
+import LoadingScreen from './screens/LoadingScreen';
+import Titlebar, { titlebarProps } from './components/Titlebar';
+
+export const AppContext = createContext({
+  appStyle: {} as React.CSSProperties,
+  setAppStyle: {} as React.Dispatch<React.SetStateAction<React.CSSProperties>>,
+  titlebarStyle: {} as titlebarProps,
+  setTitlebarStyle: {} as React.Dispatch<React.SetStateAction<titlebarProps>>,
+});
 
 function App() {
-  const [maximized, setMaximized] = React.useState(false);
-
-  window.electron.ipcRenderer.onWindow('maximized', () => {
-    setMaximized(true);
-  });
-
-  window.electron.ipcRenderer.onWindow('unmaximized', () => {
-    setMaximized(false);
-  });
-
-  const minimize = () => {
-    window.electron.ipcRenderer.sendWindowMessage('minimize');
-  };
-
-  const maximize = () => {
-    window.electron.ipcRenderer.sendWindowMessage('toggle_maximized');
-  };
-
-  const close = () => {
-    window.electron.ipcRenderer.sendWindowMessage('close');
-  };
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [appStyle, setAppStyle] = useState({} as React.CSSProperties);
+  const [titlebarStyle, setTitlebarStyle] = useState({
+    title: 'Code Zone',
+    backgroundColor: 'transparent',
+    foregroundColor: 'white',
+  } as titlebarProps);
 
   const [smoothScrollBar] = useGlobalState('smoothScrollBar');
 
@@ -45,38 +39,40 @@ function App() {
     }
   }, [smoothScrollBar, pathname]);
 
+  useEffect(() => {
+    onAuthStateChanged(getAuth(), (user) => {
+      setIsAuthenticated(user !== null);
+      setIsLoading(false);
+    });
+  }, []);
+
   return (
-    <div className="app__container">
-      <div className="app__titlebar">
-        <div className="app__draggable">
-          <div className="app__title">Code Zone</div>
-        </div>
-        <div className="app__window-controls">
-          <div onClick={minimize} className="app__window-control--minimize">
-            <FaRegWindowMinimize size="15px" />
-          </div>
-          <div onClick={maximize} className="app__window-control--expand">
-            {maximized ? (
-              <TbWindowMinimize size="20px" />
-            ) : (
-              <TbWindowMaximize size="20px" />
-            )}
-          </div>
-          <div onClick={close} className="app__window-control--close">
-            <IoClose size="25px" />
-          </div>
+    <AppContext.Provider
+      value={{ appStyle, setAppStyle, titlebarStyle, setTitlebarStyle }}
+    >
+      <div className="app__container" style={appStyle}>
+        <Titlebar
+          title={titlebarStyle.title}
+          backgroundColor={titlebarStyle.backgroundColor}
+          foregroundColor={titlebarStyle.foregroundColor}
+        />
+        <div className="app_scroll-container">
+          <ScrollContainer>
+            <ToastProvider>
+              <div className="app__body">
+                {isLoading ? (
+                  <LoadingScreen />
+                ) : isAuthenticated ? (
+                  <AppNavigation />
+                ) : (
+                  <AuthNavigation />
+                )}
+              </div>
+            </ToastProvider>
+          </ScrollContainer>
         </div>
       </div>
-      <div className="app_scroll-container">
-        <ScrollContainer>
-          <ToastProvider>
-            <div className="app__body">
-              <Navigation />
-            </div>
-          </ToastProvider>
-        </ScrollContainer>
-      </div>
-    </div>
+    </AppContext.Provider>
   );
 }
 

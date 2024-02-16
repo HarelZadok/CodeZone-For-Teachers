@@ -6,12 +6,14 @@ import { Link } from 'react-router-dom';
 import { loginUser } from '../functions';
 import PasswordInput from '../components/PasswordInput';
 import BackButton from '../components/BackButton';
+import LoadingScreen from './LoadingScreen';
 
 function SignInScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
@@ -25,12 +27,15 @@ function SignInScreen() {
     // ... handle successful signin or potential errors
     setError(null);
 
+    setIsLoading(true);
+
     try {
       await loginUser({ email, password });
-      window.location.href = '/dashboard';
     } catch (e: any) {
       setError(e.message);
     }
+
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -48,6 +53,10 @@ function SignInScreen() {
     if (tName === 'email') setEmail(value);
     if (tName === 'password') setPassword(value);
   };
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="signin-screen__container">

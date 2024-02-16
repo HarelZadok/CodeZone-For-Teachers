@@ -2,13 +2,22 @@
 
 import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { Deeplink } from 'electron-deeplink';
+import isDev from 'electron-is-dev';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import Store from 'electron-store';
 
+const store = new Store();
+
 let mainWindow: BrowserWindow | null = null;
 
 let isMaximized = false;
+
+ipcMain.setMaxListeners(0);
+app.setMaxListeners(0);
+
+process.setMaxListeners(0);
 
 class AppUpdater {
   constructor() {
@@ -58,8 +67,6 @@ const installExtensions = async () => {
     )
     .catch(console.log);
 };
-
-const store = new Store();
 
 const updateBounds = (
   property: 'maximize' | 'unmaximize' | 'resize' | 'move',
@@ -137,12 +144,16 @@ const createWindow = async () => {
     show: false,
     autoHideMenuBar: true,
     webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: true,
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
       devTools: false,
     },
   });
+
+  mainWindow.setMaxListeners(0);
 
   await mainWindow.loadURL('http://localhost:1212');
 
@@ -182,6 +193,13 @@ const createWindow = async () => {
   mainWindow.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
+  });
+
+  const protocol = isDev ? 'codezone-dev' : 'codezone-app';
+  const deeplink = new Deeplink({ app, mainWindow, protocol, isDev });
+
+  deeplink.on('received', (link: any) => {
+    mainWindow?.webContents.send('deeplink', link);
   });
 
   // eslint-disable-next-line

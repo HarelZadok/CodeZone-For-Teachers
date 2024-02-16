@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './StartPageScreen.css';
 import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useListener } from '../functions';
 import ConfirmExit from '../components/ConfirmExit';
+import { getAuth } from 'firebase/auth';
 
 Modal.setAppElement('#root');
 

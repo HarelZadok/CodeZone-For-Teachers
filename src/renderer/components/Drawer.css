@@ -1,0 +1,24 @@
+.drawer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 200px;
+  min-height: calc(100vh - 51px);
+}
+
+.drawer__item-logout {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+  margin: 25px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  gap: 8px;
+}
+
+.drawer__item-logout:hover {
+  color: red;
+}

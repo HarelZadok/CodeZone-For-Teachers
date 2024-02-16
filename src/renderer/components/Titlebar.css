@@ -1,0 +1,75 @@
+.titlebar__titlebar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+  width: 100vw;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e5e5e5;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.titlebar__draggable {
+  -webkit-app-region: drag;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.titlebar__title {
+  display: flex;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #333;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+}
+
+.titlebar__window-controls {
+  display: flex;
+  height: 100%;
+  flex-direction: row;
+}
+
+.titlebar__window-control--close {
+  height: 100%;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titlebar__window-control--close:hover {
+  background-color: red;
+  color: white;
+}
+
+.titlebar__window-control--minimize {
+  height: 100%;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titlebar__window-control--minimize:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.titlebar__window-control--expand {
+  height: 100%;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titlebar__window-control--expand:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}

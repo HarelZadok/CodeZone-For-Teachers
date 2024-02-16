@@ -1,20 +1,20 @@
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-  signOut,
+  getAuth,
   sendEmailVerification,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut,
   updateEmail,
   updatePassword,
   updatePhoneNumber,
   updateProfile,
-  getAuth,
   verifyPasswordResetCode,
-  parseActionCodeURL,
 } from 'firebase/auth';
-import { useEffect } from 'react';
-import firebase from 'firebase/compat';
-import ActionCodeURL = firebase.auth.ActionCodeURL;
+import { AppContext } from './App';
+import { useEffect, useContext } from 'react';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../../firebase_config';
 
 export { updatePassword, updateEmail, updatePhoneNumber, updateProfile };
 
@@ -34,10 +34,17 @@ export const registerUser = async (user: userArgs) => {
       await updateProfile(u, {
         displayName: user.name,
       });
+
+      await setDoc(doc(db, 'users', u.uid), {
+        name: user.name,
+        email: user.email,
+        uid: u.uid,
+      });
     }
 
     return u;
   } catch (e: any) {
+    alert(e.code);
     switch (e.code) {
       case 'auth/email-already-in-use':
         throw new Error('Email already in use');
@@ -55,9 +62,15 @@ export const registerUser = async (user: userArgs) => {
 
 export const loginUser = async (args: userArgs) => {
   try {
-    return (
-      await signInWithEmailAndPassword(getAuth(), args.email, args.password)
-    ).user;
+    const auth = getAuth();
+
+    const { user } = await signInWithEmailAndPassword(
+      auth,
+      args.email,
+      args.password,
+    );
+
+    return user;
   } catch (e: any) {
     switch (e.code) {
       case 'auth/invalid-email':
@@ -134,41 +147,6 @@ export const sendPasswordResetCode = async (email: string) => {
   }
 };
 
-export const sendResetCode = async (email: string) => {
-  const URL = parseActionCodeURL(
-    'http://localhost:3000/reset-password',
-  ) as ActionCodeURL;
-
-  try {
-    await sendPasswordResetEmail(getAuth(), email, {
-      url: URL.code,
-      handleCodeInApp: true,
-    });
-  } catch (e: any) {
-    switch (e.code) {
-      case 'auth/invalid-email':
-        throw new Error('Invalid email');
-      case 'auth/user-not-found':
-        throw new Error('User not found');
-      default:
-        throw new Error('Unknown error');
-    }
-  }
-
-  try {
-    await sendPasswordResetEmail(getAuth(), email);
-  } catch (e: any) {
-    switch (e.code) {
-      case 'auth/invalid-email':
-        throw new Error('Invalid email');
-      case 'auth/user-not-found':
-        throw new Error('User not found');
-      default:
-        throw new Error('Unknown error');
-    }
-  }
-};
-
 export const verifyResetCode = async (code: string) => {
   try {
     await verifyPasswordResetCode(getAuth(), code);
@@ -188,7 +166,10 @@ export const verifyResetCode = async (code: string) => {
   }
 };
 
-export const logOut = signOut(getAuth());
+export const logOut = async () => {
+  await signOut(getAuth());
+  window.location.href = '/';
+};
 
 // eslint-disable-next-line no-undef
 export function useListener<K extends keyof WindowEventMap>(
@@ -208,4 +189,30 @@ export const setDelay = (ms: number) => {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
+};
+
+export const useAppStyle = () => {
+  const { appStyle, setAppStyle, titlebarStyle, setTitlebarStyle } =
+    useContext(AppContext);
+
+  const resetAppStyle = () => {
+    setAppStyle({});
+  };
+
+  const resetTitlebarStyle = () => {
+    setTitlebarStyle({
+      title: 'Code Zone',
+      backgroundColor: 'transparent',
+      foregroundColor: 'white',
+    });
+  };
+
+  return {
+    appStyle,
+    setAppStyle,
+    resetAppStyle,
+    titlebarStyle,
+    setTitlebarStyle,
+    resetTitlebarStyle,
+  };
 };
