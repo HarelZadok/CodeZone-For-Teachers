@@ -16,6 +16,7 @@ import {
 } from 'react-icons/ri';
 import { MdTask, MdOutlineTask } from 'react-icons/md';
 import LoadingScreen from './LoadingScreen';
+import TasksScreen from './subscreens/TasksScreen';
 
 function MainScreen() {
   const { setAppStyle, resetAppStyle, setTitlebarStyle, resetTitlebarStyle } =
@@ -95,8 +96,7 @@ function MainScreen() {
       <div
         style={{
           display: 'flex',
-          width: '100%',
-          height: '100%',
+          flex: 1,
           flexDirection: 'column',
         }}
       >
@@ -104,7 +104,7 @@ function MainScreen() {
           <div className="dashboard-screen__body">
             <Routes>
               <Route path="/main_dashboard" element={<h1>Dashboard</h1>} />
-              <Route path="/main_tasks" element={<h1>Tasks</h1>} />
+              <Route path="/main_tasks" element={<TasksScreen />} />
               <Route path="/main_students" element={<h1>Students</h1>} />
               <Route path="/main_profile" element={<h1>Profile</h1>} />
               <Route path="/main_settings" element={<h1>Settings</h1>} />

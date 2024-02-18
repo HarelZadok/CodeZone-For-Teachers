@@ -13,18 +13,29 @@ import {
 } from 'firebase/auth';
 import { AppContext } from './App';
 import { useEffect, useContext } from 'react';
-import { doc, setDoc } from 'firebase/firestore';
+import {
+  doc,
+  setDoc,
+  query,
+  where,
+  getDocs,
+  collection,
+  onSnapshot,
+  deleteDoc,
+} from 'firebase/firestore';
 import { db } from '../../firebase_config';
+import firebase from 'firebase/compat';
+import FirestoreError = firebase.firestore.FirestoreError;
 
 export { updatePassword, updateEmail, updatePhoneNumber, updateProfile };
 
-type userArgs = {
+type UserArgs = {
   email: string;
   password: string;
   name?: string;
 };
 
-export const registerUser = async (user: userArgs) => {
+export const registerUser = async (user: UserArgs) => {
   try {
     const u = (
       await createUserWithEmailAndPassword(getAuth(), user.email, user.password)
@@ -60,7 +71,7 @@ export const registerUser = async (user: userArgs) => {
   }
 };
 
-export const loginUser = async (args: userArgs) => {
+export const loginUser = async (args: UserArgs) => {
   try {
     const auth = getAuth();
 
@@ -215,4 +226,105 @@ export const useAppStyle = () => {
     setTitlebarStyle,
     resetTitlebarStyle,
   };
+};
+
+export type TaskProps = {
+  title: string;
+  description: string;
+  testData?: { [key: string]: string };
+  dueDate?: Date;
+  dateCreated?: Date;
+};
+
+export const taskExists = async (title: string) => {
+  const user = getCurrentUser();
+
+  if (!user) {
+    throw new Error('No user found');
+  }
+
+  const q = query(
+    collection(db, `users/${user.uid}/tasks`),
+    where('title', '==', title),
+  );
+
+  const querySnapshot = await getDocs(q);
+
+  return querySnapshot.size > 0;
+};
+
+export const createTask = async (task: TaskProps) => {
+  const user = getCurrentUser();
+
+  if (!user) {
+    throw new Error('No user found');
+  }
+
+  if (await taskExists(task.title)) {
+    throw new Error('Task already exists');
+  }
+
+  await setDoc(doc(db, `users/${user.uid}/tasks/${task.title}`), {
+    ...task,
+    dateCreated: task.dateCreated ?? new Date(),
+  });
+};
+
+export const deleteTask = async (title: string) => {
+  const user = getCurrentUser();
+
+  if (!user) {
+    throw new Error('No user found');
+  }
+
+  await deleteDoc(doc(db, `users/${user.uid}/tasks/${title}`));
+};
+
+export const getTasks = async () => {
+  const user = getCurrentUser();
+
+  if (!user) {
+    throw new Error('No user found');
+  }
+
+  const q = query(collection(db, `users/${user.uid}/tasks`));
+
+  const querySnapshot = await getDocs(q);
+
+  const tasks: TaskProps[] = [];
+
+  querySnapshot.forEach((doc) => {
+    tasks.push(doc.data() as TaskProps);
+  });
+
+  return tasks;
+};
+
+export const taskListener = (
+  callback: (tasks: TaskProps[]) => void,
+  onError?: (e: FirestoreError) => void,
+) => {
+  const user = getCurrentUser();
+
+  if (!user) {
+    throw new Error('No user found');
+  }
+
+  const q = query(collection(db, `users/${user.uid}/tasks`));
+
+  return onSnapshot(
+    q,
+    (querySnapshot) => {
+      const tasks: TaskProps[] = [];
+
+      querySnapshot.forEach((doc) => {
+        tasks.push(doc.data() as TaskProps);
+      });
+
+      callback(tasks);
+    },
+    (e) => {
+      if (onError) onError(e);
+    },
+  );
 };
