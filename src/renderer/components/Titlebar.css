@@ -47,7 +47,7 @@
 
 .titlebar__window-control--close:hover {
   background-color: red;
-  color: white;
+  color: white !important;
 }
 
 .titlebar__window-control--minimize {
