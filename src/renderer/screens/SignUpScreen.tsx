@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { registerUser } from '../functions';
 import PasswordInput from '../components/PasswordInput';
 import BackButton from '../components/BackButton';
+import { useNavigate } from 'react-router';
 
 function SignUpScreen() {
   const [name, setName] = useState('');
@@ -14,6 +15,8 @@ function SignUpScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
@@ -34,7 +37,7 @@ function SignUpScreen() {
 
     try {
       await registerUser({ email, password, name });
-      window.location.href = '/dashboard';
+      navigate('/dashboard');
     } catch (e: any) {
       setError(e.message);
     }

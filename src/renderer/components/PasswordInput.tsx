@@ -1,4 +1,4 @@
-import { MdOutlinePassword, MdAbc } from 'react-icons/md';
+import { MdAbc, MdOutlinePassword } from 'react-icons/md';
 import React, { useState } from 'react';
 import './PasswordInput.css';
 

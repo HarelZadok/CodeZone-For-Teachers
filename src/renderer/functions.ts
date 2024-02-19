@@ -12,16 +12,16 @@ import {
   verifyPasswordResetCode,
 } from 'firebase/auth';
 import { AppContext } from './App';
-import { useEffect, useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import {
-  doc,
-  setDoc,
-  query,
-  where,
-  getDocs,
   collection,
-  onSnapshot,
   deleteDoc,
+  doc,
+  getDocs,
+  onSnapshot,
+  query,
+  setDoc,
+  where,
 } from 'firebase/firestore';
 import { db } from '../../firebase_config';
 import firebase from 'firebase/compat';

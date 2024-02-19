@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { logOut, useAppStyle, useListener } from '../functions';
+import { logOut, useAppStyle } from '../functions';
 import './MainScreen.css';
 import { ScrollContainer } from 'react-nice-scroll';
 import Drawer from '../components/Drawer';
 import { Route, Routes } from 'react-router-dom';
-import { useNavigate } from 'react-router';
 import DrawerItem from '../components/DrawerItem';
-import { MdOutlineSpaceDashboard, MdSpaceDashboard } from 'react-icons/md';
+import {
+  MdOutlineSpaceDashboard,
+  MdOutlineTask,
+  MdSpaceDashboard,
+  MdTask,
+} from 'react-icons/md';
 import { IoPeople, IoPeopleOutline } from 'react-icons/io5';
 import { HiOutlineUser, HiUser } from 'react-icons/hi2';
 import {
@@ -14,7 +18,6 @@ import {
   RiSettings3Line,
   RiShutDownLine,
 } from 'react-icons/ri';
-import { MdTask, MdOutlineTask } from 'react-icons/md';
 import LoadingScreen from './LoadingScreen';
 import TasksScreen from './subscreens/TasksScreen';
 
@@ -23,12 +26,6 @@ function MainScreen() {
     useAppStyle();
 
   const [isLoading, setIsLoading] = useState(false);
-
-  useListener('mouseup', (e) => {
-    if (e.button === 3 || e.button === 4) {
-      // e.preventDefault();
-    }
-  });
 
   useEffect(() => {
     setAppStyle((style) => ({

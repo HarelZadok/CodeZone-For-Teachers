@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import './DrawerItem.css';
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router';
 import { IconType } from 'react-icons';
 

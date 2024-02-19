@@ -9,6 +9,8 @@ type DrawerProps = {
   defaultActiveDrawerItem?: string;
 };
 
+let itemsTitles: string[] = [];
+
 const Drawer = ({
   onChange,
   children,
@@ -23,6 +25,16 @@ const Drawer = ({
       onChange(activeDrawerItem.toLowerCase());
     }
   }, [activeDrawerItem]);
+
+  useEffect(() => {
+    window.addEventListener('popstate', () => {
+      itemsTitles.forEach((title) => {
+        if (window.location.pathname.includes(title.toLowerCase())) {
+          setActiveDrawerItem(title);
+        }
+      });
+    });
+  }, []);
 
   return (
     <div
@@ -47,6 +59,13 @@ const Drawer = ({
                 if (item.type !== DrawerItem) {
                   return item;
                 }
+
+                const title = (item.props as any).title;
+
+                if (!itemsTitles.includes(title)) {
+                  itemsTitles.push(title);
+                }
+
                 return (
                   <DrawerItem
                     activeDrawerItem={activeDrawerItem}

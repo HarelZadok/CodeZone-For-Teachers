@@ -1,12 +1,12 @@
 /* eslint jsx-a11y/click-events-have-key-events: off, jsx-a11y/no-static-element-interactions: off, react/jsx-props-no-spreading: off */
 
 import { useLocation } from 'react-router-dom';
-import React, { useEffect, useState, createContext } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import './App.css';
 import { ScrollContainer, useGlobalState } from 'react-nice-scroll';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import 'react-nice-scroll/dist/styles.css';
-import { AuthNavigation, AppNavigation } from './Navigation';
+import { AppNavigation, AuthNavigation } from './Navigation';
 import { ToastProvider } from './components/Toast';
 import LoadingScreen from './screens/LoadingScreen';
 import Titlebar, { titlebarProps } from './components/Titlebar';
