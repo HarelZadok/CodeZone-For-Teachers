@@ -1,20 +1,58 @@
-.dashboard-screen__container {
+.main-screen__container {
   display: flex;
   flex-direction: row;
   height: 100%;
   width: 100%;
 }
 
-.dashboard-screen__container > * {
+.main-screen__container > * {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
 
-.dashboard-screen__body {
+.main-screen__body {
   display: flex;
   flex-direction: column;
   width: 100%;
   min-height: calc(100vh - 51px);
 }
+
+.main-screen__titlebar-notifications-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
+
+.main-screen__titlebar-notifications-button-ringing {
+  animation: ring 2s infinite linear;
+  will-change: contents;
+}
+
+@keyframes ring {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  20% {
+    transform: rotateZ(15deg);
+  }
+  40% {
+    transform: rotateZ(0deg);
+  }
+  60% {
+    transform: rotateZ(-15deg);
+  }
+  80% {
+    transform: rotateZ(0deg);
+  }
+  100% {
+    transform: rotateZ(360deg); /* Assuming you want a continuous rotation */
+  }
+}
+

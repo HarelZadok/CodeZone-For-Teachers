@@ -18,20 +18,50 @@ import {
   RiSettings3Line,
   RiShutDownLine,
 } from 'react-icons/ri';
+import { Popover } from 'antd';
+import {
+  PiBellSimple,
+  PiBellSimpleFill,
+  PiBellSimpleRinging,
+} from 'react-icons/pi';
 import LoadingScreen from './LoadingScreen';
 import TasksScreen from './subscreens/TasksScreen';
+import { useNotifications, useToast } from '../components/Toast';
+import NotificationsPanel from '../components/NotificationsPanel';
 
 function MainScreen() {
-  const { setAppStyle, resetAppStyle, setTitlebarStyle, resetTitlebarStyle } =
-    useAppStyle();
+  const {
+    setAppStyle,
+    resetAppStyle,
+    setTitlebarStyle,
+    resetTitlebarStyle,
+    setTitlebarItems,
+  } = useAppStyle();
+
+  const notifications = useNotifications();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isNotificationsRinging, setIsNotificationsRinging] = useState(false);
 
   useListener('mouseup', (e) => {
     if (e.button === 3 || e.button === 4) {
       e.preventDefault();
     }
   });
+
+  useEffect(
+    () =>
+      notifications.onNotification((notification) => {
+        setIsNotificationsRinging(true);
+      }),
+    [],
+  );
+
+  const toggleNotifications = () => {
+    setIsNotificationsOpen((open) => !open);
+    setIsNotificationsRinging(false);
+  };
 
   useEffect(() => {
     setAppStyle((style) => ({
@@ -44,11 +74,35 @@ function MainScreen() {
       foregroundColor: 'black',
     }));
 
+    setTitlebarItems([
+      <Popover
+        content={<NotificationsPanel notificationsHandler={notifications} />}
+        trigger="click"
+        placement="bottomRight"
+        onOpenChange={toggleNotifications}
+        key={0}
+      >
+        <div className="main-screen__titlebar-notifications-button">
+          {isNotificationsOpen ? (
+            <PiBellSimpleFill size="25px" />
+          ) : isNotificationsRinging ? (
+            <PiBellSimpleRinging
+              className="main-screen__titlebar-notifications-button-ringing"
+              size="25px"
+            />
+          ) : (
+            <PiBellSimple size="25px" />
+          )}
+        </div>
+      </Popover>,
+    ]);
+
     return () => {
       resetAppStyle();
       resetTitlebarStyle();
+      setTitlebarItems([]);
     };
-  }, []);
+  }, [isNotificationsOpen, isNotificationsRinging]);
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -60,7 +114,7 @@ function MainScreen() {
   }
 
   return (
-    <div className="dashboard-screen__container">
+    <div className="main-screen__container">
       <Drawer defaultActiveDrawerItem="Dashboard">
         <DrawerItem
           Icon={MdSpaceDashboard}
@@ -104,7 +158,7 @@ function MainScreen() {
         }}
       >
         <ScrollContainer>
-          <div className="dashboard-screen__body">
+          <div className="main-screen__body">
             <Routes>
               <Route path="/main_dashboard" element={<h1>Dashboard</h1>} />
               <Route path="/main_tasks" element={<TasksScreen />} />

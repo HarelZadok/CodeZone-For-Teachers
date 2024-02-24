@@ -14,6 +14,8 @@ import { CreateNewTask } from '../../components/CreateNewTask';
 let tasks: TaskProps[] = [];
 
 const TasksList = (props: { taskList: TaskProps[] }) => {
+  const showToast = useToast();
+
   if (props.taskList.length === 0) {
     return (
       <div className="tasks-screen__no-tasks">
@@ -27,7 +29,7 @@ const TasksList = (props: { taskList: TaskProps[] }) => {
     <>
       {props.taskList.map((task) => (
         <button
-          onClick={() => deleteTask(task.title)}
+          onClick={() => showToast(task.title, 1, 's', true)}
           className="tasks-screen__task-list-button-item"
           key={task.title}
         >

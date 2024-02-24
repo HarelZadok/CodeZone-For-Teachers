@@ -16,6 +16,10 @@ export const AppContext = createContext({
   setAppStyle: {} as React.Dispatch<React.SetStateAction<React.CSSProperties>>,
   titlebarStyle: {} as titlebarProps,
   setTitlebarStyle: {} as React.Dispatch<React.SetStateAction<titlebarProps>>,
+  titlebarItems: [] as React.ReactNode[],
+  setTitlebarItems: {} as React.Dispatch<
+    React.SetStateAction<React.ReactNode[]>
+  >,
 });
 
 function App() {
@@ -27,6 +31,7 @@ function App() {
     backgroundColor: 'transparent',
     foregroundColor: 'white',
   } as titlebarProps);
+  const [titlebarItems, setTitlebarItems] = useState([] as React.ReactNode[]);
 
   const [smoothScrollBar] = useGlobalState('smoothScrollBar');
 
@@ -48,13 +53,21 @@ function App() {
 
   return (
     <AppContext.Provider
-      value={{ appStyle, setAppStyle, titlebarStyle, setTitlebarStyle }}
+      value={{
+        appStyle,
+        setAppStyle,
+        titlebarStyle,
+        setTitlebarStyle,
+        titlebarItems,
+        setTitlebarItems,
+      }}
     >
       <div className="app__container" style={appStyle}>
         <Titlebar
           title={titlebarStyle.title}
           backgroundColor={titlebarStyle.backgroundColor}
           foregroundColor={titlebarStyle.foregroundColor}
+          items={titlebarItems}
         />
         <div className="app_scroll-container">
           <ScrollContainer>

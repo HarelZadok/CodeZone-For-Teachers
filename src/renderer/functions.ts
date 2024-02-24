@@ -202,8 +202,14 @@ export const setDelay = (ms: number) => {
 };
 
 export const useAppStyle = () => {
-  const { appStyle, setAppStyle, titlebarStyle, setTitlebarStyle } =
-    useContext(AppContext);
+  const {
+    appStyle,
+    setAppStyle,
+    titlebarStyle,
+    setTitlebarStyle,
+    titlebarItems,
+    setTitlebarItems,
+  } = useContext(AppContext);
 
   const resetAppStyle = () => {
     setAppStyle({});
@@ -224,6 +230,8 @@ export const useAppStyle = () => {
     titlebarStyle,
     setTitlebarStyle,
     resetTitlebarStyle,
+    titlebarItems,
+    setTitlebarItems,
   };
 };
 

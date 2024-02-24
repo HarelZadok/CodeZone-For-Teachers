@@ -7,6 +7,7 @@ import { isMaximized } from '../functions';
 
 export type titlebarProps = {
   title: string;
+  items?: React.ReactNode;
   backgroundColor?: string;
   foregroundColor?: string;
 };
@@ -49,11 +50,11 @@ function Titlebar(props: titlebarProps) {
       </div>
       <div className="titlebar__window-controls">
         <div
-          onClick={minimize}
-          className="titlebar__window-control--minimize"
+          onClick={close}
+          className="titlebar__window-control--close"
           style={{ color: props.foregroundColor ?? undefined }}
         >
-          <FaRegWindowMinimize size="15px" />
+          <IoClose size="25px" />
         </div>
         <div
           onClick={maximize}
@@ -67,12 +68,23 @@ function Titlebar(props: titlebarProps) {
           )}
         </div>
         <div
-          onClick={close}
-          className="titlebar__window-control--close"
+          onClick={minimize}
+          className="titlebar__window-control--minimize"
           style={{ color: props.foregroundColor ?? undefined }}
         >
-          <IoClose size="25px" />
+          <FaRegWindowMinimize size="15px" />
         </div>
+        {props.items && React.Children.count(props.items) > 0 && (
+          <>
+            <div className="titlebar__window-control--separator" />
+            <div
+              className="titlebar__window-control--items"
+              style={{ color: props.foregroundColor ?? undefined }}
+            >
+              {props.items}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

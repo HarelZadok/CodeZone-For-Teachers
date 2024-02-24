@@ -19,6 +19,8 @@ app.setMaxListeners(0);
 
 process.setMaxListeners(0);
 
+const devTools = true;
+
 class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -153,7 +155,7 @@ const createWindow = async () => {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
-      devTools: false,
+      devTools: devTools,
     },
   });
 

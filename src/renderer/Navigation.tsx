@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import StartPageScreen from './screens/StartPageScreen';
 import SignUpScreen from './screens/SignUpScreen';

@@ -34,7 +34,7 @@
 .titlebar__window-controls {
   display: flex;
   height: 100%;
-  flex-direction: row;
+  flex-direction: row-reverse;
 }
 
 .titlebar__window-control--close {
@@ -72,4 +72,18 @@
 
 .titlebar__window-control--expand:hover {
   background-color: rgba(0, 0, 0, 0.1);
+}
+
+.titlebar__window-control--separator {
+  height: 100%;
+  width: 2px;
+  background-color: #ddd;
+}
+
+.titlebar__window-control--items {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }

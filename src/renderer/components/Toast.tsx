@@ -12,12 +12,18 @@ type ToastProviderProps = {
   children: React.JSX.Element[] | React.JSX.Element;
 };
 
+type unsubscribe = () => void;
+
 type ToastContextProps = {
   showToast: (
     message: any,
     duration?: number,
     durationUnit?: 'ms' | 's',
+    notify?: boolean,
   ) => void;
+  notifications: string[];
+  deleteNotification: (notification: string) => void;
+  onNotification: (listener: (notification: string) => void) => unsubscribe;
 };
 
 const ToastContext = React.createContext<ToastContextProps | undefined>(
@@ -28,15 +34,40 @@ type Toast = {
   message: any;
   duration?: number;
   durationUnit?: 'ms' | 's';
+  notify?: boolean;
 };
 
 function ToastProvider({ children }: ToastProviderProps) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [isShowingToast, setIsShowingToast] = useState(false);
   const animationRef = useRef<HTMLDivElement>(null);
+  const [notifications, setNotifications] = useState<string[]>([]);
+  const listeners = useRef<((notification: string) => void)[]>([]);
+
+  const onNotification = (listener: (notification: string) => void) => {
+    listeners.current.push(listener);
+
+    return () => {
+      listeners.current = listeners.current.filter((l) => l !== listener);
+    };
+  };
 
   const showToast = useMemo(() => {
-    return (message: any, duration?: number, durationUnit?: 'ms' | 's') => {
+    return (
+      message: any,
+      duration?: number,
+      durationUnit?: 'ms' | 's',
+      notify?: boolean,
+    ) => {
+      if (notify) {
+        setNotifications((prevNotifications) => [
+          ...prevNotifications,
+          message,
+        ]);
+
+        listeners.current.forEach((listener) => listener(message));
+      }
+
       setToasts((prevState) => [
         ...prevState,
         {
@@ -61,13 +92,22 @@ function ToastProvider({ children }: ToastProviderProps) {
     }
   }, [toasts]);
 
+  const deleteNotification = useCallback((notification: string) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.filter((n) => n !== notification),
+    );
+  }, []);
+
   useEffect(() => {
     if (!isShowingToast) {
       showNextToast();
     }
   }, [isShowingToast, showNextToast, toasts]);
 
-  const contextValue = useMemo(() => ({ showToast }), [showToast]);
+  const contextValue = useMemo(
+    () => ({ showToast, notifications, deleteNotification, onNotification }),
+    [showToast, notifications, deleteNotification, onNotification],
+  );
 
   return (
     <ToastContext.Provider value={contextValue}>
@@ -99,4 +139,18 @@ function useToast() {
   return context.showToast;
 }
 
-export { ToastProvider, useToast };
+function useNotifications() {
+  const context = React.useContext(ToastContext);
+
+  if (!context) {
+    throw new Error('useNotifications must be used within a ToastProvider');
+  }
+
+  return {
+    notifications: context.notifications,
+    deleteNotification: context.deleteNotification,
+    onNotification: context.onNotification,
+  };
+}
+
+export { ToastProvider, useToast, useNotifications };
