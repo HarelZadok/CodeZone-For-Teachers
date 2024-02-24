@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { logOut, useAppStyle } from '../functions';
+import { logOut, useAppStyle, useListener } from '../functions';
 import './MainScreen.css';
 import { ScrollContainer } from 'react-nice-scroll';
 import Drawer from '../components/Drawer';
@@ -27,10 +27,16 @@ function MainScreen() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  useListener('mouseup', (e) => {
+    if (e.button === 3 || e.button === 4) {
+      e.preventDefault();
+    }
+  });
+
   useEffect(() => {
     setAppStyle((style) => ({
       ...style,
-      background: 'linear-gradient(90deg, #fff 200px, #039be510 200px)',
+      background: 'linear-gradient(90deg, #fff 200px, #eff9fe 200px)',
     }));
 
     setTitlebarStyle((style) => ({

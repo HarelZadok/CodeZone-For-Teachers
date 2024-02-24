@@ -3,6 +3,7 @@ import { FaRegWindowMinimize } from 'react-icons/fa6';
 import { TbWindowMaximize, TbWindowMinimize } from 'react-icons/tb';
 import { IoClose } from 'react-icons/io5';
 import './Titlebar.css';
+import { isMaximized } from '../functions';
 
 export type titlebarProps = {
   title: string;
@@ -11,7 +12,7 @@ export type titlebarProps = {
 };
 
 function Titlebar(props: titlebarProps) {
-  const [maximized, setMaximized] = React.useState(false);
+  const [maximized, setMaximized] = React.useState(isMaximized());
 
   window.electron.ipcRenderer.onWindow('maximized', () => {
     setMaximized(true);

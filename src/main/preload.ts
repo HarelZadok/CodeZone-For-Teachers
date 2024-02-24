@@ -2,13 +2,20 @@
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
-export type Channels = 'minimize' | 'toggle_maximized' | 'close';
+export type Channels =
+  | 'minimize'
+  | 'toggle_maximized'
+  | 'close'
+  | 'check_maximized';
 export type Channels2 = 'minimized' | 'maximized' | 'unmaximized' | 'closed';
 
 const electronHandler = {
   ipcRenderer: {
     sendWindowMessage(channel: Channels, ...args: unknown[]) {
       ipcRenderer.send(channel, ...args);
+    },
+    sendWindowMessageSync(channel: Channels) {
+      return ipcRenderer.sendSync(channel);
     },
     onWindow(channel: Channels2, func: (...args: unknown[]) => void) {
       const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>

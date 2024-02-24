@@ -64,6 +64,7 @@
     }
   },
   "dependencies": {
+    "antd": "^5.14.1",
     "crypto-js": "^4.2.0",
     "electron-debug": "^3.2.0",
     "electron-deeplink": "^1.0.10",
@@ -79,6 +80,7 @@
     "react-nice-scroll": "^1.0.0",
     "react-router": "^6.22.0",
     "react-router-dom": "^6.16.0",
+    "react-transition-group": "^4.4.5",
     "secure-electron-store": "^4.0.2",
     "url": "^0.11.3"
   },
@@ -98,6 +100,7 @@
     "@types/react-helmet": "^6.1.11",
     "@types/react-modal": "^3.16.3",
     "@types/react-test-renderer": "^18.0.1",
+    "@types/react-transition-group": "^4.4.10",
     "@types/terser-webpack-plugin": "^5.0.4",
     "@types/webpack-bundle-analyzer": "^4.6.0",
     "@typescript-eslint/eslint-plugin": "^6.7.0",

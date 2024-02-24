@@ -13,7 +13,11 @@ type ToastProviderProps = {
 };
 
 type ToastContextProps = {
-  showToast: (message: any, duration: number, durationUnit: 'ms' | 's') => void;
+  showToast: (
+    message: any,
+    duration?: number,
+    durationUnit?: 'ms' | 's',
+  ) => void;
 };
 
 const ToastContext = React.createContext<ToastContextProps | undefined>(
@@ -22,8 +26,8 @@ const ToastContext = React.createContext<ToastContextProps | undefined>(
 
 type Toast = {
   message: any;
-  duration: number;
-  durationUnit: 'ms' | 's';
+  duration?: number;
+  durationUnit?: 'ms' | 's';
 };
 
 function ToastProvider({ children }: ToastProviderProps) {
@@ -32,10 +36,14 @@ function ToastProvider({ children }: ToastProviderProps) {
   const animationRef = useRef<HTMLDivElement>(null);
 
   const showToast = useMemo(() => {
-    return (message: any, duration: number, durationUnit: 'ms' | 's') => {
+    return (message: any, duration?: number, durationUnit?: 'ms' | 's') => {
       setToasts((prevState) => [
         ...prevState,
-        { message, duration, durationUnit },
+        {
+          message,
+          duration: duration ?? 5000,
+          durationUnit: durationUnit ?? 'ms',
+        },
       ]);
     };
   }, []);
@@ -45,7 +53,7 @@ function ToastProvider({ children }: ToastProviderProps) {
       setIsShowingToast(true);
 
       await setDelay(
-        toasts[0].duration * (toasts[0].durationUnit === 's' ? 1000 : 1),
+        toasts[0].duration! * (toasts[0].durationUnit === 's' ? 1000 : 1),
       );
 
       setToasts((prevToasts) => prevToasts.slice(1));

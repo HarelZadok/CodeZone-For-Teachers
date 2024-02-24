@@ -1,17 +1,28 @@
 import React, { useEffect, useState } from 'react';
+import { CSSTransition } from 'react-transition-group';
 import './TasksScreen.css';
 import {
-  createTask,
   deleteTask,
   getTasks,
   taskListener,
   TaskProps,
+  useListener,
 } from '../../functions';
 import { useToast } from '../../components/Toast';
+import { CreateNewTask } from '../../components/CreateNewTask';
 
 let tasks: TaskProps[] = [];
 
 const TasksList = (props: { taskList: TaskProps[] }) => {
+  if (props.taskList.length === 0) {
+    return (
+      <div className="tasks-screen__no-tasks">
+        <h1>No tasks found</h1>
+        <p>Try adding a new task</p>
+      </div>
+    );
+  }
+
   return (
     <>
       {props.taskList.map((task) => (
@@ -31,6 +42,15 @@ const TasksList = (props: { taskList: TaskProps[] }) => {
 function TasksScreen() {
   const [, forceUpdate] = useState({});
   const [renderedTasks, setRenderedTasks] = useState<TaskProps[]>(tasks);
+  const [isCreatingTask, setIsCreatingTask] = useState(false);
+  const [showBody, setShowBody] = useState(true);
+
+  useListener('mouseup', (e) => {
+    if (e.button === 3) {
+      e.preventDefault();
+      setIsCreatingTask(false);
+    }
+  });
 
   const orderTasksByDate = () => {
     tasks.sort((a, b) => {
@@ -74,29 +94,38 @@ function TasksScreen() {
   }, [showToast]);
 
   const handleAddTask = async () => {
-    try {
-      await createTask({
-        title: 'New task title' + tasks.length,
-        description: 'New task description',
-      });
-    } catch (e: any) {
-      showToast(e.message, 5, 's');
-    }
+    setIsCreatingTask(true);
   };
 
   return (
     <div className="tasks-screen__container">
-      <div className="tasks-screen__header">
-        <span>Tasks</span>
-        <button onClick={handleAddTask}>Add task</button>
-      </div>
-      <input
-        className="tasks-screen__search-bar"
-        type="text"
-        placeholder="Search tasks"
-        onChange={handleSearch}
-      />
-      <TasksList taskList={renderedTasks} />
+      <CSSTransition
+        in={isCreatingTask}
+        timeout={500}
+        onEntered={() => setShowBody(false)}
+        onExit={() => setShowBody(true)}
+        classNames="tasks-screen__create-task"
+        unmountOnExit
+      >
+        <div className="tasks-screen__task-container">
+          <CreateNewTask onBackPressed={() => setIsCreatingTask(false)} />
+        </div>
+      </CSSTransition>
+      {showBody && (
+        <>
+          <div className="tasks-screen__header">
+            <span>Tasks</span>
+            <button onClick={handleAddTask}>Add task</button>
+          </div>
+          <input
+            className="tasks-screen__search-bar"
+            type="text"
+            placeholder="Search tasks"
+            onChange={handleSearch}
+          />
+          <TasksList taskList={renderedTasks} />
+        </>
+      )}
     </div>
   );
 }

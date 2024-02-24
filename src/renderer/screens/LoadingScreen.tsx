@@ -9,7 +9,7 @@ function LoadingScreen() {
         height={150}
         width={150}
         radius={5}
-        color="white"
+        color="#039be5"
         ariaLabel="ball-triangle-loading"
         wrapperStyle={{}}
         wrapperClass=""

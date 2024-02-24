@@ -43,6 +43,10 @@ ipcMain.on('close', () => {
   mainWindow?.close();
 });
 
+ipcMain.on('check_maximized', (event) => {
+  event.returnValue = mainWindow?.isMaximized();
+});
+
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();

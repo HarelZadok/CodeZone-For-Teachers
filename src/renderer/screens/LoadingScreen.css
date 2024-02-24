@@ -5,11 +5,12 @@
   align-items: center;
   height: 100%;
   width: 100%;
+  background-color: white;
 }
 
 .loading-screen__label {
   margin-top: 50px;
   font-size: 24px;
   font-weight: normal;
-  color: white;
+  color: #039be5;
 }

@@ -182,7 +182,6 @@ export const logOut = async () => {
   window.location.href = '/';
 };
 
-// eslint-disable-next-line no-undef
 export function useListener<K extends keyof WindowEventMap>(
   event: K,
   // eslint-disable-next-line no-undef
@@ -232,6 +231,7 @@ export type TaskProps = {
   title: string;
   description: string;
   testData?: { [key: string]: string };
+  startDate?: Date;
   dueDate?: Date;
   dateCreated?: Date;
 };
@@ -327,4 +327,12 @@ export const taskListener = (
       if (onError) onError(e);
     },
   );
+};
+
+export const isMaximized = (): boolean => {
+  return window.electron.ipcRenderer.sendWindowMessageSync('check_maximized');
+};
+
+export const removeUndefined = (obj: { [key: string]: any }) => {
+  Object.keys(obj).forEach((key) => obj[key] === undefined && delete obj[key]);
 };
