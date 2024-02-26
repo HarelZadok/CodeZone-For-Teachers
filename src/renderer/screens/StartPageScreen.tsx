@@ -19,7 +19,7 @@ function StartPageScreen() {
   });
 
   return (
-    <div className="start-page-screen__container">
+    <div className="start-page-screen">
       <Modal isOpen={modalIsOpen} className="confirm-exit__modal">
         <ConfirmExit onClose={setModalIsOpen} />
       </Modal>

@@ -1,5 +1,5 @@
 /* Overall layout */
-.start-page-screen__container {
+.start-page-screen {
   display: flex;
   flex: 1;
   flex-direction: column;

@@ -2,20 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import './TasksScreen.css';
 import {
-  deleteTask,
   getTasks,
   taskListener,
   TaskProps,
   useListener,
 } from '../../functions';
-import { useToast } from '../../components/Toast';
+import { useNotifications, useToast } from '../../components/Toast';
 import { CreateNewTask } from '../../components/CreateNewTask';
 
 let tasks: TaskProps[] = [];
 
-const TasksList = (props: { taskList: TaskProps[] }) => {
-  const showToast = useToast();
-
+const TasksList = (props: {
+  taskList: TaskProps[];
+  onTaskClick?: (task: TaskProps) => void;
+}) => {
   if (props.taskList.length === 0) {
     return (
       <div className="tasks-screen__no-tasks">
@@ -29,7 +29,7 @@ const TasksList = (props: { taskList: TaskProps[] }) => {
     <>
       {props.taskList.map((task) => (
         <button
-          onClick={() => showToast(task.title, 1, 's', true)}
+          onClick={() => props.onTaskClick?.(task)}
           className="tasks-screen__task-list-button-item"
           key={task.title}
         >
@@ -46,6 +46,8 @@ function TasksScreen() {
   const [renderedTasks, setRenderedTasks] = useState<TaskProps[]>(tasks);
   const [isCreatingTask, setIsCreatingTask] = useState(false);
   const [showBody, setShowBody] = useState(true);
+
+  const { sendNotification } = useNotifications();
 
   useListener('mouseup', (e) => {
     if (e.button === 3) {
@@ -125,7 +127,12 @@ function TasksScreen() {
             placeholder="Search tasks"
             onChange={handleSearch}
           />
-          <TasksList taskList={renderedTasks} />
+          <TasksList
+            taskList={renderedTasks}
+            onTaskClick={(task) => {
+              sendNotification(task.title);
+            }}
+          />
         </>
       )}
     </div>

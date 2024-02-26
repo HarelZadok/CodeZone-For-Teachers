@@ -26,7 +26,7 @@ import {
 } from 'react-icons/pi';
 import LoadingScreen from './LoadingScreen';
 import TasksScreen from './subscreens/TasksScreen';
-import { useNotifications, useToast } from '../components/Toast';
+import { useNotifications } from '../components/Toast';
 import NotificationsPanel from '../components/NotificationsPanel';
 
 function MainScreen() {

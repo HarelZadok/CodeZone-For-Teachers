@@ -25,6 +25,7 @@ type ToastContextProps = {
   deleteNotification: (index: number) => void;
   onNotification: (listener: (notification: string) => void) => unsubscribe;
   clearNotifications: () => void;
+  sendNotification: (message: string) => void;
 };
 
 const ToastContext = React.createContext<ToastContextProps | undefined>(
@@ -53,6 +54,12 @@ function ToastProvider({ children }: ToastProviderProps) {
     };
   };
 
+  const sendNotification = (message: string) => {
+    setNotifications((prevNotifications) => [...prevNotifications, message]);
+
+    listeners.current.forEach((listener) => listener(message));
+  };
+
   const showToast = useMemo(() => {
     return (
       message: any,
@@ -61,12 +68,7 @@ function ToastProvider({ children }: ToastProviderProps) {
       notify?: boolean,
     ) => {
       if (notify) {
-        setNotifications((prevNotifications) => [
-          ...prevNotifications,
-          message,
-        ]);
-
-        listeners.current.forEach((listener) => listener(message));
+        sendNotification(message);
       }
 
       setToasts((prevState) => [
@@ -116,6 +118,7 @@ function ToastProvider({ children }: ToastProviderProps) {
       deleteNotification,
       onNotification,
       clearNotifications,
+      sendNotification,
     }),
     [
       showToast,
@@ -123,6 +126,7 @@ function ToastProvider({ children }: ToastProviderProps) {
       deleteNotification,
       onNotification,
       clearNotifications,
+      sendNotification,
     ],
   );
 
@@ -168,6 +172,7 @@ function useNotifications() {
     deleteNotification: context.deleteNotification,
     onNotification: context.onNotification,
     clearNotifications: context.clearNotifications,
+    sendNotification: context.sendNotification,
   };
 }
 

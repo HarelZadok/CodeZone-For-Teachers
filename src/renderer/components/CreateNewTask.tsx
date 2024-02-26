@@ -4,7 +4,7 @@ import { DatePicker } from 'antd';
 import dayjs from 'dayjs';
 import './CreateNewTask.css';
 import { useToast } from './Toast';
-import { createTask, removeUndefined, TaskProps } from '../functions';
+import { createTask, removeUndefined } from '../functions';
 
 type CreateNewTaskProps = {
   onBackPressed: () => void;
