@@ -79,8 +79,10 @@ function MainScreen() {
         content={<NotificationsPanel notificationsHandler={notifications} />}
         trigger="click"
         placement="bottomRight"
+        arrow={{ pointAtCenter: true }}
         onOpenChange={toggleNotifications}
         key={0}
+        destroyTooltipOnHide
       >
         <div className="main-screen__titlebar-notifications-button">
           {isNotificationsOpen ? (

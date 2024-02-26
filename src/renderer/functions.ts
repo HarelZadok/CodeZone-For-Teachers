@@ -12,7 +12,7 @@ import {
   verifyPasswordResetCode,
 } from 'firebase/auth';
 import { AppContext } from './App';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import {
   collection,
   deleteDoc,
@@ -343,4 +343,16 @@ export const isMaximized = (): boolean => {
 
 export const removeUndefined = (obj: { [key: string]: any }) => {
   Object.keys(obj).forEach((key) => obj[key] === undefined && delete obj[key]);
+};
+
+export const useOnChange = (callback: () => void, deps: any[]) => {
+  const didMount = useRef(false);
+
+  useEffect(() => {
+    if (didMount.current) {
+      callback();
+    } else {
+      didMount.current = true;
+    }
+  }, deps);
 };

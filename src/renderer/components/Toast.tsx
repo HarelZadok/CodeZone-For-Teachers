@@ -22,8 +22,9 @@ type ToastContextProps = {
     notify?: boolean,
   ) => void;
   notifications: string[];
-  deleteNotification: (notification: string) => void;
+  deleteNotification: (index: number) => void;
   onNotification: (listener: (notification: string) => void) => unsubscribe;
+  clearNotifications: () => void;
 };
 
 const ToastContext = React.createContext<ToastContextProps | undefined>(
@@ -92,10 +93,14 @@ function ToastProvider({ children }: ToastProviderProps) {
     }
   }, [toasts]);
 
-  const deleteNotification = useCallback((notification: string) => {
+  const deleteNotification = useCallback((index: number) => {
     setNotifications((prevNotifications) =>
-      prevNotifications.filter((n) => n !== notification),
+      prevNotifications.filter((_, i) => i !== index),
     );
+  }, []);
+
+  const clearNotifications = useCallback(() => {
+    setNotifications([]);
   }, []);
 
   useEffect(() => {
@@ -105,8 +110,20 @@ function ToastProvider({ children }: ToastProviderProps) {
   }, [isShowingToast, showNextToast, toasts]);
 
   const contextValue = useMemo(
-    () => ({ showToast, notifications, deleteNotification, onNotification }),
-    [showToast, notifications, deleteNotification, onNotification],
+    () => ({
+      showToast,
+      notifications,
+      deleteNotification,
+      onNotification,
+      clearNotifications,
+    }),
+    [
+      showToast,
+      notifications,
+      deleteNotification,
+      onNotification,
+      clearNotifications,
+    ],
   );
 
   return (
@@ -150,6 +167,7 @@ function useNotifications() {
     notifications: context.notifications,
     deleteNotification: context.deleteNotification,
     onNotification: context.onNotification,
+    clearNotifications: context.clearNotifications,
   };
 }
 
