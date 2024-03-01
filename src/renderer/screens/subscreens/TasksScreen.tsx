@@ -10,7 +10,7 @@ import {
 import { useNotifications, useToast } from '../../components/Toast';
 import { CreateNewTask } from '../../components/CreateNewTask';
 
-let tasks: TaskProps[] = [];
+let tasks: TaskProps[] | undefined = undefined;
 
 const TasksList = (props: {
   taskList: TaskProps[];
@@ -43,7 +43,9 @@ const TasksList = (props: {
 
 function TasksScreen() {
   const [, forceUpdate] = useState({});
-  const [renderedTasks, setRenderedTasks] = useState<TaskProps[]>(tasks);
+  const [renderedTasks, setRenderedTasks] = useState<TaskProps[] | undefined>(
+    tasks,
+  );
   const [isCreatingTask, setIsCreatingTask] = useState(false);
   const [showBody, setShowBody] = useState(true);
 
@@ -57,6 +59,8 @@ function TasksScreen() {
   });
 
   const orderTasksByDate = () => {
+    if (!tasks) return;
+
     tasks.sort((a, b) => {
       if (a.dateCreated && b.dateCreated) {
         return a.dateCreated > b.dateCreated ? -1 : 1;
@@ -73,6 +77,8 @@ function TasksScreen() {
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!tasks) return;
+
     const search = e.target.value.toLowerCase();
     setRenderedTasks(
       tasks.filter(
@@ -101,6 +107,10 @@ function TasksScreen() {
     setIsCreatingTask(true);
   };
 
+  if (!renderedTasks) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="tasks-screen__container">
       <CSSTransition
@@ -128,7 +138,7 @@ function TasksScreen() {
             onChange={handleSearch}
           />
           <TasksList
-            taskList={renderedTasks}
+            taskList={renderedTasks!}
             onTaskClick={(task) => {
               sendNotification(task.title);
             }}

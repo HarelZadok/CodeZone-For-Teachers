@@ -85,15 +85,25 @@ export const CreateNewTask = (props: CreateNewTaskProps) => {
             id="dueDate"
             name="dueDate"
             inputReadOnly
+            allowClear
+            allowEmpty
             onChange={(value) => {
               if (!value) {
                 setStartDate(new Date());
                 setDueDate(undefined);
                 return;
               }
+
               setStartDate(value[0]!.toDate());
+
+              if (!value[1]) {
+                setDueDate(undefined);
+                return;
+              }
+
               setDueDate(value[1]!.toDate());
             }}
+            value={[dayjs(startDate), dayjs(dueDate)]}
             style={{ width: 'fit-content' }}
             disabledDate={(current) => {
               return (
