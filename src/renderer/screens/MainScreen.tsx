@@ -28,6 +28,7 @@ import LoadingScreen from './LoadingScreen';
 import TasksScreen from './subscreens/TasksScreen';
 import { useNotifications } from '../components/Toast';
 import NotificationsPanel from '../components/NotificationsPanel';
+import StudentsScreen from './subscreens/StudentsScreen';
 
 function MainScreen() {
   const {
@@ -164,7 +165,7 @@ function MainScreen() {
             <Routes>
               <Route path="/main_dashboard" element={<h1>Dashboard</h1>} />
               <Route path="/main_tasks" element={<TasksScreen />} />
-              <Route path="/main_students" element={<h1>Students</h1>} />
+              <Route path="/main_students" element={<StudentsScreen />} />
               <Route path="/main_profile" element={<h1>Profile</h1>} />
               <Route path="/main_settings" element={<h1>Settings</h1>} />
             </Routes>
