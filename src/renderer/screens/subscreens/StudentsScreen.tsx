@@ -1,11 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './StudentsScreen.css';
-import { ScrollContainer } from 'react-nice-scroll';
 import EntryListView from '../../components/EntryListView';
+import { addStudent, getStudents } from '../../functions';
 
 const StudentsScreen = () => {
   const [students, setStudents] = useState<any>([]);
   const [classes, setClasses] = useState<any>([]);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const students = await getStudents();
+        setStudents(students);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchStudents();
+  }, []);
+
+  const handleAddStudent = async () => {
+    try {
+      await addStudent(
+        'new-student-' + Math.floor(Math.random() * 1000),
+        'New Student',
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   return (
     <div className="students-screen">
@@ -13,12 +37,7 @@ const StudentsScreen = () => {
         list={students}
         title="Students"
         itemName="Student"
-        onAdd={() => {
-          setStudents([
-            ...students,
-            { name: 'New Student ' + Math.floor(Math.random() * 1000) },
-          ] as any);
-        }}
+        onAdd={handleAddStudent}
       />
       <EntryListView
         list={classes}

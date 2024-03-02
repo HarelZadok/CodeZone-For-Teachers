@@ -337,6 +337,77 @@ export const taskListener = (
   );
 };
 
+export const addStudent = async (id: string, name: string) => {
+  const user = getCurrentUser();
+
+  if (!user) {
+    throw new Error('No user found');
+  }
+
+  await setDoc(doc(db, `users/${user.uid}/students/${id}`), {
+    name,
+  });
+};
+
+export const getStudents = async () => {
+  const user = getCurrentUser();
+
+  if (!user) {
+    throw new Error('No user found');
+  }
+
+  const q = query(collection(db, `users/${user.uid}/students`));
+
+  const querySnapshot = await getDocs(q);
+
+  const students: { id: string; name: string }[] = [];
+
+  querySnapshot.forEach((doc) => {
+    students.push({ id: doc.id, name: doc.data().name });
+  });
+
+  return students;
+};
+
+export const deleteStudent = async (id: string) => {
+  const user = getCurrentUser();
+
+  if (!user) {
+    throw new Error('No user found');
+  }
+
+  await deleteDoc(doc(db, `users/${user.uid}/students/${id}`));
+};
+
+export const studentListener = (
+  callback: (students: { id: string; name: string }[]) => void,
+  onError?: (e: FirestoreError) => void,
+) => {
+  const user = getCurrentUser();
+
+  if (!user) {
+    throw new Error('No user found');
+  }
+
+  const q = query(collection(db, `users/${user.uid}/students`));
+
+  return onSnapshot(
+    q,
+    (querySnapshot) => {
+      const students: { id: string; name: string }[] = [];
+
+      querySnapshot.forEach((doc) => {
+        students.push({ id: doc.id, name: doc.data().name });
+      });
+
+      callback(students);
+    },
+    (e) => {
+      if (onError) onError(e);
+    },
+  );
+};
+
 export const isMaximized = (): boolean => {
   return window.electron.ipcRenderer.sendWindowMessageSync('check_maximized');
 };

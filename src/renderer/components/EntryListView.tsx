@@ -40,10 +40,10 @@ export const EntryListView = ({ list, title, itemName, onAdd }: any) => {
       ) : (
         <ScrollContainer>
           <div className="entry-list-view__students-list">
-            {renderedItems.map((item: any) => (
+            {renderedItems.map((item: any, index: number) => (
               <button
                 className="entry-list-view__student-list-button-item"
-                key={item.id}
+                key={index}
               >
                 <h2>{item.name}</h2>
               </button>
